@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sovereign Test Harness: BASICVIEW</title>
+    <style>
+        body { margin: 0; padding: 20px; font-family: sans-serif; background: #0d0d0d; color: #fff; }
+        #root { width: 100%; height: 100%; min-height: 500px; border: 1px dashed #333; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module">
+        import { mount_app } from './src/mount.jsx';
+        
+        // Mock Platform API
+        const mockPlatformAPI = {
+            folderPath: "tests/mock_vault",
+            fs: {
+                read: async (p) => {
+                    console.log("[Mock FS] Reading: " + p);
+                    try {
+                        const res = await fetch('/' + p);
+                        return await res.text();
+                    } catch(e) { return null; }
+                }
+            },
+            ui: {
+                toast: (msg) => console.log("[Mock Toast]", msg)
+            }
+        };
+
+        // Initialize component
+        mount_app(document.getElementById('root'), mockPlatformAPI);
+    </script>
+</body>
+</html>

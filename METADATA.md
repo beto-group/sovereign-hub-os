@@ -28,6 +28,7 @@ network: Offline
 runtime: PureJS
 entry_point: BASIC VIEW.md
 logic: src/index.jsx
+contributor: []
 ---
 
 This file contains the machine-readable packaging manifest and indexing properties for this component.

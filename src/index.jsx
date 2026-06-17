@@ -2,10 +2,7 @@
  * Datacore Boilerplate - High Performance View Factory
  * Includes Modular Assembly, Unit Testing, and MCP Agent Control
  */
-async function View({ folderPath }) {
-    // 1. Initialize Safe Agent immediately (Pure JS, no React deps)
-    const fs = require('fs');
-
+function View({ folderPath }) {
     // Core Agent Logic (Inline for maximum safety)
     // This allows the agent to work even if the MainComponent hits a syntax error
     const Agent = {
@@ -205,4 +202,4 @@ function AppWrapper({
     );
 }
 
-return { View };
+export { View };
