@@ -15,6 +15,9 @@ export async function mount_app(container, platformAPI) {
         app: platformAPI.app || {},
     };
 
+    // Inject dc into the global window scope so legacy index.jsx can find it!
+    window.dc = dc;
+
     root.render(<View dc={dc} folderPath={platformAPI.folderPath || ""} platformAPI={platformAPI} />);
     
     return function cleanup() {

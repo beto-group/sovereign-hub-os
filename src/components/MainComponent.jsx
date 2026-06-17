@@ -27,7 +27,7 @@ export function MainComponent(props) {
 
             <div className="hub-header">
                 <div className="hub-title-group">
-                    <h1>Sovereign Hub OS</h1>
+                    <h1>Datacore Hub OS</h1>
                     <p>Foundational Design System & High-Performance View Factory</p>
                 </div>
                 <div className="status-badge">
@@ -68,7 +68,7 @@ export function MainComponent(props) {
                 <div className="glass-card span-6">
                     <div className="card-icon"><FlaskConical size={24} /></div>
                     <h3>ASTP Integration</h3>
-                    <p>The Automated Sovereign Testing Pipeline is active. Components can be hot-reloaded and verified by the testing subagent automatically.</p>
+                    <p>The Automated Datacore Testing Pipeline is active. Components can be hot-reloaded and verified by the testing subagent automatically.</p>
                     <button className="hub-action-btn" onClick={onCodeReloadRequest}>
                         Force Hot Reload
                     </button>
