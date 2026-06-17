@@ -3,6 +3,7 @@
  * Includes Modular Assembly, Unit Testing, and MCP Agent Control
  */
 function View({ folderPath }) {
+    const dc = window.dc || globalThis.dc;
     // Core Agent Logic (Inline for maximum safety)
     // This allows the agent to work even if the MainComponent hits a syntax error
     const Agent = {
@@ -159,6 +160,7 @@ function AppWrapper({
     MainComponent, MCPBridge, useTheme, debugManager,
     TestRunner, ControlsMenu, useFullTab, domUtils, folderPath, themeCSS
 }) {
+    const dc = window.dc || globalThis.dc;
     const containerRef = dc.useRef(null);
     const [key, setKey] = dc.useState(0);
     const [isFullTab, setIsFullTab] = dc.useState(true);
