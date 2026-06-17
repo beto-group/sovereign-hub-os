@@ -2,8 +2,9 @@
  * Datacore Boilerplate - High Performance View Factory
  * Includes Modular Assembly, Unit Testing, and MCP Agent Control
  */
+import React from 'react';
+
 function View({ folderPath }) {
-    const dc = window.dc || globalThis.dc;
     // Core Agent Logic (Inline for maximum safety)
     // This allows the agent to work even if the MainComponent hits a syntax error
     const Agent = {
@@ -15,8 +16,8 @@ function View({ folderPath }) {
 
             Agent.timer = setInterval(async () => {
                 try {
-                    const adapter = dc.app.vault.adapter;
-                    if (!(await adapter.exists(cmdFile))) return;
+                    const adapter = window.dc?.app?.vault?.adapter;
+                    if (!adapter || !(await adapter.exists(cmdFile))) return;
 
                     const content = await adapter.read(cmdFile);
                     let cmd;
@@ -41,7 +42,7 @@ function View({ folderPath }) {
                                 try { await adapter.write(logFile, JSON.stringify(act, null, 2)); } catch (e) { }
                                 onReload();
                             } else if (cmd.action === 'open_settings') {
-                                dc.app.setting.open();
+                                window.dc?.app?.setting?.open();
                             }
                         }
                     }
@@ -53,16 +54,16 @@ function View({ folderPath }) {
 
     // 2. Define Safety Wrapper Component
     const SafeView = () => {
-        const [app, setApp] = dc.useState(null);
-        const [error, setError] = dc.useState(null);
-        const [key, setKey] = dc.useState(0);
+        const [app, setApp] = React.useState(null);
+        const [error, setError] = React.useState(null);
+        const [key, setKey] = React.useState(0);
 
         // A. Start Agent when the view mounts
-        dc.useEffect(() => {
+        React.useEffect(() => {
             const stopAgent = Agent.start(folderPath, () => {
                 // Reload Logic
-                if (dc.app.workspace.activeLeaf?.rebuildView) {
-                    dc.app.workspace.activeLeaf.rebuildView();
+                if (window.dc?.app?.workspace?.activeLeaf?.rebuildView) {
+                    window.dc.app.workspace.activeLeaf.rebuildView();
                 } else {
                     setKey(k => k + 1); // Soft reload
                 }
@@ -71,24 +72,24 @@ function View({ folderPath }) {
         }, []);
 
         // B. Load Main App safely
-        dc.useEffect(() => {
+        React.useEffect(() => {
             const load = async () => {
                 try {
                     console.log(`[SafeView] Loading modules... Timestamp: ${Date.now()}`);
                     // Lazy load everything so we catch syntax errors in them
-                    const domUtils = await dc.require(folderPath + '/src/utils/domUtils.jsx');
-                    const { useTheme } = await dc.require(folderPath + '/src/hooks/useTheme.jsx');
-                    const { useFullTab } = await dc.require(folderPath + '/src/hooks/useFullTab.jsx');
+                    const domUtils = await window.dc.require(folderPath + '/src/utils/domUtils.jsx');
+                    const { useTheme } = await window.dc.require(folderPath + '/src/hooks/useTheme.jsx');
+                    const { useFullTab } = await window.dc.require(folderPath + '/src/hooks/useFullTab.jsx');
 
                     // Force refresh attempt (comment change)
-                    const bridgeMod = await dc.require(folderPath + '/src/components/MCPBridge.jsx');
+                    const bridgeMod = await window.dc.require(folderPath + '/src/components/MCPBridge.jsx');
                     const MCPBridge = bridgeMod.MCPBridge;
 
-                    const TestRunner = await dc.require(folderPath + '/src/TestRunner.jsx');
-                    const { MainComponent } = await dc.require(folderPath + '/src/components/MainComponent.jsx');
-                    const { ControlsMenu } = await dc.require(folderPath + '/src/components/ControlsMenu.jsx');
-                    const { debugManager } = await dc.require(folderPath + '/src/utils/debugManager.jsx');
-                    const { CSS } = await dc.require(folderPath + '/src/styles/theme.css.js');
+                    const TestRunner = await window.dc.require(folderPath + '/src/TestRunner.jsx');
+                    const { MainComponent } = await window.dc.require(folderPath + '/src/components/MainComponent.jsx');
+                    const { ControlsMenu } = await window.dc.require(folderPath + '/src/components/ControlsMenu.jsx');
+                    const { debugManager } = await window.dc.require(folderPath + '/src/utils/debugManager.jsx');
+                    const { CSS } = await window.dc.require(folderPath + '/src/styles/theme.css.js');
 
                     setApp({
                         MainComponent, MCPBridge, useTheme,
@@ -160,10 +161,9 @@ function AppWrapper({
     MainComponent, MCPBridge, useTheme, debugManager,
     TestRunner, ControlsMenu, useFullTab, domUtils, folderPath, themeCSS
 }) {
-    const dc = window.dc || globalThis.dc;
-    const containerRef = dc.useRef(null);
-    const [key, setKey] = dc.useState(0);
-    const [isFullTab, setIsFullTab] = dc.useState(true);
+    const containerRef = React.useRef(null);
+    const [key, setKey] = React.useState(0);
+    const [isFullTab, setIsFullTab] = React.useState(true);
 
     // Apply Theme
     useTheme({ css: themeCSS, folderPath });
@@ -172,8 +172,8 @@ function AppWrapper({
     useFullTab({ isFullTab, containerRef, domUtils });
 
     const handleReload = () => {
-        if (dc.app.workspace.activeLeaf?.rebuildView) {
-            dc.app.workspace.activeLeaf.rebuildView();
+        if (window.dc?.app?.workspace?.activeLeaf?.rebuildView) {
+            window.dc.app.workspace.activeLeaf.rebuildView();
         } else {
             setKey(prev => prev + 1);
         }
